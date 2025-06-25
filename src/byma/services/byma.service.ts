@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CustomHttpService } from '../../shared/http/http.service';
+import axios from 'axios';
 import * as https from 'https';
 import { CedearView } from '../interfaces/cedear-view.interface';
 import { CedearRaw } from '../interfaces/raw-cedear.interface';
@@ -23,14 +24,14 @@ export class BymaService {
     });
     const url = this.configService.get<string>('URL_CEDEARS') || '';
     const body = { excludeZeroPxAndQty: true, T1: true, T0: false };
-    const response: { data: CedearRaw[] } = await this.http.post(url, body, {
+    const response = await axios.post(url, body, {
       headers: { 'Content-Type': 'application/json' },
       httpsAgent: agent,
     });
     if (!response || !response.data) {
       throw new Error('No data received from the API');
     }
-    const rawData: CedearRaw[] = response.data as unknown as CedearRaw[];
+    const rawData: CedearRaw[] = response.data as CedearRaw[];
     const mapped: CedearView[] = rawData.map(mapCedear);
     return mapped;
   }

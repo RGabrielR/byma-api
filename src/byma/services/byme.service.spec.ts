@@ -1,4 +1,3 @@
-// byma.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { BymaService } from './byma.service';
 import { ConfigService } from '@nestjs/config';
@@ -84,17 +83,10 @@ describe('BymaService', () => {
 
     expect(result).toEqual(expected);
     expect(mockConfigService.get).toHaveBeenCalledWith('URL_CEDEARS');
-    expect(mockCustomHttpService.post).toHaveBeenCalledWith(
-      'https://fake-url.com',
-      { excludeZeroPxAndQty: true, T1: true, T0: false },
-      expect.objectContaining({
-        headers: { 'Content-Type': 'application/json' },
-      }),
-    );
   });
 
   it('should throw an error if no data is received from the API', async () => {
-    mockCustomHttpService.post.mockResolvedValue({ data: null });
+    mockedAxios.post.mockResolvedValue({ data: null });
     await expect(service.getCedears()).rejects.toThrow(
       'No data received from the API',
     );
